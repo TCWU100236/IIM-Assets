@@ -1,0 +1,53 @@
+<!-- detail.html (dj4ch07 project) -->
+{% extends "base.html" %}
+{% block title %}{{asset.asset_code | default:"找不到指定的手機"}}{% endblock %}
+{% block content %}
+<div class='container' align=center>
+    {% if asset %}
+    <table>
+        <tr>
+            <td align=center>
+                <h3>{{ asset.asset_code }}/{{ asset.name }}</h3>
+            </td>
+        </tr>
+        <tr>
+            <td align=center>使用者：{{ asset.location }}</td>
+        </tr>
+        <tr>
+            <td align=center>附件：{{ asset.accessories }}</td>
+        </tr>
+        <tr>
+            <td align=center>廠牌/型號/序號：{{ asset.brand }}/{{ asset.model }}/{{ asset.serial_number }}</td>
+        </tr>
+        <tr>
+            <td align=center>單價：NT${{ asset.unit_price }}元</td>
+        </tr>
+        <tr>
+            <td align=center>購買日期：{{ asset.purchase_date }}</td>
+        </tr>
+        <tr>
+            <td align=center>備註：{{ asset.note }}</td>
+        </tr>
+        <!-- {% for image in images %}
+            {% if forloop.first %}
+            <tr>
+                <td align=center>
+                    {% endif %}
+                    {% comment %} <img src='{{ image.url }}' width=350><br> {% endcomment %}
+                    <img src="/media/{{image.media}}" width=350><br>
+                    {% if forloop.last %}
+                </td>
+            </tr>
+            {% endif %}
+            {% empty %}
+            <tr>
+                <td align=center>暫無圖片</td>
+            </tr>
+        {% endfor %} -->
+    </table>
+    {% else %}
+    <h2>找不到指定的財產/非消耗品</h2>
+    {% endif %}
+
+</div>
+{% endblock %}

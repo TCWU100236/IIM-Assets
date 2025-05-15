@@ -1,0 +1,33 @@
+<!-- index.html (dj4ch07 project) -->
+{% extends "base.html" %}
+{% block title %}成大工資管財產管理系統{% endblock %}
+{% block content %}
+    <div class="container" align="center">
+        {% for a in assets %}
+            {% if forloop.first %}
+            <table>
+                <tr bgcolor='#cccccc'>
+                    <td width=150>財產編號</td>
+                    <td width=250>財務名稱</td>
+                    <td width=100>廠牌</td>
+                    <td width=300>型號/序號</td>
+                    <td width=100>使用者</td>
+                    <td width=150>購買日期</td>
+                </tr>
+            {% endif %}
+            <tr bgcolor='{% cycle "#ffccff" "ccffcc" %}'>
+                <td><a href='{% url "detail-url" a.id %}'>{{ a.asset_code }}</a></td>
+                <td>{{ a.name }}</td>
+                <td>{{ a.brand }}</td>
+                <td>{{ a.model }}/{{ a.serial_number }}</td>
+                <td>{{ a.location  }}</td>
+                <td>{{ a.purchase_date  }}</td>
+            </tr>
+            {% if forloop.last %}
+            </table>
+            {% endif %}
+            {% empty %}
+            <h3>出錯了，真抱歉</h3>
+        {% endfor %}
+    </div>
+{% endblock %}
