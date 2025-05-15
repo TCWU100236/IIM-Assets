@@ -5,22 +5,22 @@ from django.db import models
 from django.conf import settings
 
 class UserProfile(models.Model):
-    username = models.CharField(max_length=10)
-    userid = models.CharField(max_length=10, unique=True)
-    email = models.EmailField(unique=True)
-    password = models.CharField(max_length=128)  # 用戶密碼（需自行加密處理)
+    userid = models.CharField(max_length=10, unique=True, verbose_name="使用者編號")
+    username = models.CharField(max_length=10, verbose_name="使用者名稱")
+    email = models.EmailField(unique=True, verbose_name="使用者信箱")
+    password = models.CharField(max_length=128, verbose_name="使用者密碼")  # 用戶密碼（需自行加密處理)
     role = models.CharField(max_length=20, choices=[
         ('admin', '管理員'),
         ('user', '一般使用者'),
     ])
-    phone = models.CharField(max_length=15, blank=True, null=True)
-    is_active = models.BooleanField(default=False)
+    phone = models.CharField(max_length=15, blank=True, null=True, verbose_name="使用者電話")
+    is_active = models.BooleanField(default=False, verbose_name="帳戶啟用")
 
     def __str__(self):
-        return f"{self.username} - {self.userid}"
+        return f"{self.userid} - {self.username}"
 
 class StorageLocation(models.Model):
-    Lid = models.CharField(max_length=10, verbose_name="存放處所編碼")
+    # Lid = models.CharField(max_length=10, verbose_name="存放處所編碼")
     name = models.CharField(max_length=10, unique=True, verbose_name="存放處所")
     Lteacher = models.CharField(max_length=10, blank=True, null=True, verbose_name="所屬師門")
 
@@ -39,12 +39,12 @@ class Asset(models.Model):
     accessories = models.TextField(blank=True, null=True, default="暫無附件", verbose_name="附件")
     unit_price = models.PositiveIntegerField(default=0, verbose_name="單價")
     brand = models.CharField(max_length=10, blank=True, null=True, verbose_name="廠牌")
-    model = models.CharField(max_length=20, blank=True, null=True, verbose_name="型號")
+    model = models.CharField(max_length=50, blank=True, null=True, verbose_name="型號")
     origin_country = models.CharField(max_length=10, blank=True, null=True, verbose_name="國別")
-    serial_number = models.CharField(max_length=20, blank=True, null=True, verbose_name="序號")
-    user = models.ForeignKey(UserProfile, on_delete=models.CASCADE, verbose_name="使用者")
+    serial_number = models.CharField(max_length=50, blank=True, null=True, verbose_name="序號")
+    # user = models.ForeignKey(UserProfile, on_delete=models.CASCADE, verbose_name="使用者")
     # location = models.CharField(max_length=20, blank=True, null=True, verbose_name="存放處所")
-    location = models.ForeignKey(StorageLocation, on_delete=models.CASCADE, verbose_name="存放處所")
+    location = models.ForeignKey(StorageLocation, on_delete=models.CASCADE, verbose_name="使用者")
     lifespan_years = models.PositiveIntegerField(default=0, verbose_name="使用年限")
     funding_source = models.CharField(max_length=10, default="不知", verbose_name="經費來源")
     asset_type = models.CharField(max_length=20, choices=ASSET_TYPE_CHOICES, verbose_name="財產類別")

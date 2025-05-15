@@ -2,6 +2,12 @@ from django.contrib import admin
 from mysite import models
 
 # Register your models here.
+class AssetAdmin(admin.ModelAdmin):
+    list_display = ("asset_code", "name", "accessories", "brand", "model", "serial_number", "location", "note")
+    search_fields = ("asset_code",)
+    ordering = ("asset_code",)
+
+admin.site.register(models.Asset, AssetAdmin)
+
 admin.site.register(models.UserProfile)
 admin.site.register(models.StorageLocation)
-admin.site.register(models.Asset)
