@@ -2,32 +2,65 @@
 {% extends "base.html" %}
 {% block title %}成大工資管財產管理系統{% endblock %}
 {% block content %}
-    <div class="container" align="center">
-        {% for a in assets %}
-            {% if forloop.first %}
-            <table>
-                <tr bgcolor='#cccccc'>
-                    <td width=150>財產編號</td>
-                    <td width=250>財務名稱</td>
-                    <td width=100>廠牌</td>
-                    <td width=300>型號/序號</td>
-                    <td width=100>使用者</td>
-                    <td width=150>購買日期</td>
+    <div class="container">
+        {% if message %}
+            <div class="alert alert-warning">{{ message }}</div>
+        {% endif %}
+        <div>
+            <form name="asset form" action="/" method="GET">
+                財產類別:
+                <input type="radio" name="asset_type" value="property">財產
+                <input type="radio" name="asset_type" value="non_consumable">非消耗品</br>
+                <label for="search_asset_id">財產編號:</label>
+                <input id="search_asset_id" type="text" name="search_asset_id"></br>
+                <label for="user_id">使用者:</label>
+                <input id="user_id" type="text" name="user_id"></br>
+                <input type="submit" value="查詢">
+                <input type="reset" value="清除重填">
+            </form>
+        </div>
+
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header" align="center">
+                        <h3>~~查詢結果~~</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            {% for a in assets %}
+                {% if forloop.first %}
+                <table>
+                    <tr bgcolor='#cccccc'>
+                        <td width=150>財產編號</td>
+                        <td width=250>財務名稱</td>
+                        <td width=100>廠牌</td>
+                        <td width=150>型號</td>
+                        <td width=150>序號</td>
+                        <td width=100>使用者</td>
+                        <td width=100>存放處所</td>
+                        <td width=150>購買日期</td>
+                    </tr>
+                {% endif %}
+                <tr bgcolor='{% cycle "#ffccff" "ccffcc" %}'>
+                    <td><a href='{% url "detail-url" a.id %}'>{{ a.asset_code }}</a></td>
+                    <td>{{ a.name }}</td>
+                    <td>{{ a.brand }}</td>
+                    <td>{{ a.model }}</td>
+                    <td>{{ a.serial_number }}</td>
+                    <td>{{ a.user  }}</td>
+                    <td>{{ a.location }}</td>
+                    <td>{{ a.purchase_date  }}</td>
                 </tr>
-            {% endif %}
-            <tr bgcolor='{% cycle "#ffccff" "ccffcc" %}'>
-                <td><a href='{% url "detail-url" a.id %}'>{{ a.asset_code }}</a></td>
-                <td>{{ a.name }}</td>
-                <td>{{ a.brand }}</td>
-                <td>{{ a.model }}/{{ a.serial_number }}</td>
-                <td>{{ a.location  }}</td>
-                <td>{{ a.purchase_date  }}</td>
-            </tr>
-            {% if forloop.last %}
-            </table>
-            {% endif %}
-            {% empty %}
-            <h3>出錯了，真抱歉</h3>
-        {% endfor %}
+                {% if forloop.last %}
+                </table>
+                {% endif %}
+                {% empty %}
+                <h3 class="text-center">目前沒有任何財產</h3>
+            {% endfor %}
+        </div>
     </div>
 {% endblock %}
