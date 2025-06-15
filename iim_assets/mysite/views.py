@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from mysite import models
+from mysite import models, forms
 
 # Create your views here.
 def index(request):
@@ -31,5 +31,15 @@ def detail(request, id):
         pass
     return render(request, "detail.html", locals())
 
+def asset_user(request):
+    asset_users = models.UserProfile.objects.all()
+    return render(request, "asset_user.html", locals())
+
+def insert_asset_user(request):
+    asset_user_form = forms.UserProfileForm()
+    return render(request, "InsertAssetUser.html", locals())
+
 def insert(request):
+    asset_form = forms.AssetForm()
+    users = models.UserProfile.objects.all()
     return render(request, "insert.html", locals())
