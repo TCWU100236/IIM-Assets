@@ -24,7 +24,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('detail/<int:id>', views.detail, name = 'detail-url'),
     path('asset_user/', views.asset_user),
-    path('asset_user/InsertAssetUser/', views.insert_asset_user),
-    path('insert/', views.insert),
+    path('insert/', views.asset_insert),
     path('', views.index),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
