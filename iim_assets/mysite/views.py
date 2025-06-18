@@ -37,9 +37,12 @@ def asset_user(request):
         asset_user_form = forms.UserProfileForm(request.POST)
         if asset_user_form.is_valid():
             asset_user_form.save()
-            return redirect("/asset_user/")
+            return redirect("all-asset-user")
         else:
-            message = "財產使用者新增失敗"
+            message = "財產使用者新增失敗。"
+            for field, errors in asset_user_form.errors.items():
+                for error in errors:
+                    message += f"\n{field}: {error}"
     else:
         asset_user_form = forms.UserProfileForm()
 
@@ -51,9 +54,9 @@ def asset_insert(request):
         asset_form = forms.AssetForm(request.POST)
         if asset_form.is_valid():
             asset_form.save()
-            return redirect("/")
+            return redirect("home")
         else:
-            message = "資料有錯，請再檢查一次"
+            message = "資料有錯，請再檢查一次。"
             for field, errors in asset_form.errors.items():
                 for error in errors:
                     message += f"\n{field}: {error}"

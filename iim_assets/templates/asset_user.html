@@ -5,26 +5,26 @@
         {% if message %}
             <div class="alert alert-warning">{{ message }}</div>
         {% endif %}
+        <div class="row" style="text-align: center;">
+            <form name="asset inserting form" action="." method="POST">
+                {% csrf_token %}<!-- 防止網站CSRF(Cross-site request forgery) -->
+                <table style="margin: auto;">
+                    {{ asset_user_form.as_table }}
+                </table>
+                <input type="submit" value="新增財產使用者">
+                <input type="reset" value="清除重填">
+            </form>
+        </div>
         <div class="row">
             <div class="col-md-12">
                 <div class="card">
                     <div class="card-header" align="center">
                         <h3>~~系統現有財產使用者~~</h3>
                     </div>
-                    <div class="row" style="text-align: center;">
-                        <form name="asset inserting form" action="." method="POST">
-                            {% csrf_token %}<!-- 防止網站CSRF(Cross-site request forgery) -->
-                            <table style="margin: auto;">
-                                {{ asset_user_form.as_table }}
-                            </table>
-                            <input type="submit" value="新增財產使用者">
-                            <input type="reset" value="清除重填">
-                        </form>
-                    </div></br>
                     <div class="row">
                         {% for user in asset_users %}
                             {% if forloop.first %}
-                            <table style="width: 80%; margin: auto;">
+                            <table style="width: 80%; margin: 10px auto; padding: 10px;">
                                 <tr bgcolor='#cccccc'>
                                     <td>使用者編號</td>
                                     <td>使用者名稱</td>
