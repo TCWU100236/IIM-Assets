@@ -13,10 +13,12 @@ def login(request):
             try:
                 user = models.SystemUser.objects.get(name = login_name)
                 if user.password == login_password:
+                    request.session["userid"] = user.id
                     request.session["username"] = user.name
                     request.session["useremail"] = user.email
                     request.session["user_role"] = user.role
                     request.session["room"] = user.room
+                    request.session.set_expiry(1800)    # session 只存活 30 分鐘
                     messages.add_message(request, messages.SUCCESS, "登入成功")
                     return redirect("/")
                 else:
@@ -30,7 +32,7 @@ def login(request):
     return render(request, "login.html", locals())
 
 def logout(request):
-    if "username" in request.session:
+    if "user_role" in request.session:
         Session.objects.all().delete()
         return redirect("/login/")
     return redirect("/")
@@ -68,6 +70,8 @@ def index(request):
     return render(request, "index.html", locals())
 
 def detail(request, id):
+    if "user_role" in request.session and request.session["user_role"] != None:
+        user_role = request.session["user_role"]
     try:
         asset = models.Asset.objects.get(id=id)
     except:
@@ -80,6 +84,7 @@ def asset_user(request):
             user_role = request.session["user_role"]
         else:
             messages.add_message(request, messages.WARNING, "您沒有此權限，請聯絡系統管理員")
+            Session.objects.all().delete()
             return redirect("/login/")
     else:
         return redirect("/login/")
@@ -99,8 +104,17 @@ def asset_user(request):
 
     return render(request, "asset_user.html", locals())
 
-def asset_insert(request):
-    message = ""
+def insert_asset(request):
+    if "user_role" in request.session and request.session["user_role"] != None:
+        if request.session["user_role"] == "系統管理者":
+            user_role = request.session["user_role"]
+        else:
+            messages.add_message(request, messages.WARNING, "您沒有此權限，請聯絡系統管理員")
+            Session.objects.all().delete()
+            return redirect("/login/")
+    else:
+        return redirect("/login/")
+
     if request.method == "POST":
         asset_form = forms.AssetForm(request.POST)
         if asset_form.is_valid():
@@ -117,12 +131,13 @@ def asset_insert(request):
 
 def SystemUserInfo(request):
     if "user_role" in request.session and request.session["user_role"] != None:
+        userid = request.session["userid"]
         user_role = request.session["user_role"]
         username = request.session["username"]
     else:
         return redirect("/login/")
     try:
-        userinfo = models.SystemUser.objects.get(name = username)
+        userinfo = models.SystemUser.objects.get(id = userid)
     except:
         pass
     return render(request, "System_UserInfo.html", locals())

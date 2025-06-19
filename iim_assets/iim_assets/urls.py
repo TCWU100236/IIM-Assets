@@ -24,7 +24,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('detail/<int:id>', views.detail, name = 'detail-url'),
     path('asset_user/', views.asset_user, name = 'all-asset-user'),
-    path('insert/', views.asset_insert),
+    path('InsertAsset/', views.insert_asset),
     path('login/', views.login),
     path('logout/', views.logout),
     path('SystemUserInfo/', views.SystemUserInfo),

@@ -73,8 +73,10 @@
                             <tr>
                                 <td colspan="4">
                                     <button type="button" class="btn btn-primary">回上一頁</button>
-                                    <button type="button" class="btn btn-success">編輯</button>
-                                    <button type="button" class="btn btn-danger">刪除</button>
+                                    {% if user_role == "系統管理者" %}
+                                        <button type="button" class="btn btn-success">編輯</button>
+                                        <button type="button" class="btn btn-danger">刪除</button>
+                                    {% endif %}
                                 </td>
                             </tr>
                         </table>
