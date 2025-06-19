@@ -25,5 +25,8 @@ urlpatterns = [
     path('detail/<int:id>', views.detail, name = 'detail-url'),
     path('asset_user/', views.asset_user, name = 'all-asset-user'),
     path('insert/', views.asset_insert),
+    path('login/', views.login),
+    path('logout/', views.logout),
+    path('SystemUserInfo/', views.SystemUserInfo),
     path('', views.index, name = 'home'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

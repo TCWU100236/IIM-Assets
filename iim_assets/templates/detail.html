@@ -1,53 +1,91 @@
-<!-- detail.html (dj4ch07 project) -->
+<!-- detail.html -->
 {% extends "base.html" %}
-{% block title %}{{asset.asset_code | default:"找不到指定的手機"}}{% endblock %}
+{% block title %}{{asset.asset_code | default:"找不到指定的財產/非消耗品"}}{% endblock %}
 {% block content %}
-<div class='container' align=center>
-    {% if asset %}
-    <table>
-        <tr>
-            <td align=center>
-                <h3>{{ asset.asset_code }}/{{ asset.name }}</h3>
-            </td>
-        </tr>
-        <tr>
-            <td align=center>使用者：{{ asset.location }}</td>
-        </tr>
-        <tr>
-            <td align=center>附件：{{ asset.accessories }}</td>
-        </tr>
-        <tr>
-            <td align=center>廠牌/型號/序號：{{ asset.brand }}/{{ asset.model }}/{{ asset.serial_number }}</td>
-        </tr>
-        <tr>
-            <td align=center>單價：NT${{ asset.unit_price }}元</td>
-        </tr>
-        <tr>
-            <td align=center>購買日期：{{ asset.purchase_date }}</td>
-        </tr>
-        <tr>
-            <td align=center>備註：{{ asset.note }}</td>
-        </tr>
-        <!-- {% for image in images %}
-            {% if forloop.first %}
-            <tr>
-                <td align=center>
-                    {% endif %}
-                    {% comment %} <img src='{{ image.url }}' width=350><br> {% endcomment %}
-                    <img src="/media/{{image.media}}" width=350><br>
-                    {% if forloop.last %}
-                </td>
-            </tr>
-            {% endif %}
-            {% empty %}
-            <tr>
-                <td align=center>暫無圖片</td>
-            </tr>
-        {% endfor %} -->
-    </table>
-    {% else %}
-    <h2>找不到指定的財產/非消耗品</h2>
-    {% endif %}
 
+<style>
+    table {
+        border-collapse: collapse;
+        width: 50%;
+    }
+    th, td {
+        border: 1px solid black;
+        padding: 8px;
+    }
+</style>
+
+<div class='container' style="text-align: center;">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                {% if asset %}
+                    <div class="card-header" align="center">
+                        <h3>{{ asset.asset_code }}</h3>
+                    </div>
+                    <div class="row">
+                        <table>
+                            <tr>
+                                <td>財產編號</td>
+                                <td>{{ asset.asset_code }}</td>
+                                <td>序號</td>
+                                <td>{{ asset.serial_number }}</td>
+                            </tr>
+                            <tr>
+                                <td>品名</td>
+                                <td>{{ asset.name }}</td>
+                                <td>使用者</td>
+                                <td>{{ asset.user }}</td>
+                            </tr>
+                            <tr>
+                                <td>附件</td>
+                                <td>{{ asset.accessories }}</td>
+                                <td>存放處所</td>
+                                <td>{{ asset.location }}</td>
+                            </tr>
+                            <tr>
+                                <td>單價</td>
+                                <td>{{ asset.unit_price }}</td>
+                                <td>使用年限</td>
+                                <td>{{ asset.lifespan_years }}</td>
+                            </tr>
+                            <tr>
+                                <td>廠牌</td>
+                                <td>{{ asset.brand }}</td>
+                                <td>經費來源</td>
+                                <td>{{ asset.funding_source }}</td>
+                            </tr>
+                            <tr>
+                                <td>型號</td>
+                                <td>{{ asset.model }}</td>
+                                <td>財產類別</td>
+                                <td>{{ asset.asset_type }}</td>
+                            </tr>
+                            <tr>
+                                <td>國別</td>
+                                <td>{{ asset.origin_country }}</td>
+                                <td>購入日期</td>
+                                <td>{{ asset.purchase_date }}</td>
+                            </tr>
+                            <tr>
+                                <td>備註</td>
+                                <td colspan="3">{{ asset.note }}</td>
+                            </tr>
+                            <tr>
+                                <td colspan="4">
+                                    <button type="button" class="btn btn-primary">回上一頁</button>
+                                    <button type="button" class="btn btn-success">編輯</button>
+                                    <button type="button" class="btn btn-danger">刪除</button>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                {% else %}
+                    <div class="card-header" align="center">
+                        <h3>找不到指定的財產/非消耗品</h3>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
 </div>
 {% endblock %}

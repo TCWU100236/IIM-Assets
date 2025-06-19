@@ -1,25 +1,69 @@
+from django.contrib.sessions.models import Session
+from django.contrib import messages
 from django.shortcuts import render, redirect
 from mysite import models, forms
 
 # Create your views here.
+def login(request):
+    if request.method == "POST":
+        login_form = forms.LoginForm(request.POST)
+        if login_form.is_valid():
+            login_name = request.POST["username"].strip()
+            login_password = request.POST["password"]
+            try:
+                user = models.SystemUser.objects.get(name = login_name)
+                if user.password == login_password:
+                    request.session["username"] = user.name
+                    request.session["useremail"] = user.email
+                    request.session["user_role"] = user.role
+                    request.session["room"] = user.room
+                    messages.add_message(request, messages.SUCCESS, "登入成功")
+                    return redirect("/")
+                else:
+                    messages.add_message(request, messages.WARNING, "密碼錯誤，請在檢查一次")
+            except:
+                messages.add_message(request, messages.WARNING, "找不到使用者")
+        else:
+            messages.add_message(request, messages.INFO, "請檢查輸入的欄位內容")
+    else:
+        login_form = forms.LoginForm()
+    return render(request, "login.html", locals())
+
+def logout(request):
+    if "username" in request.session:
+        Session.objects.all().delete()
+        return redirect("/login/")
+    return redirect("/")
+
 def index(request):
-    users = models.UserProfile.objects.all()
+    if "user_role" in request.session and request.session["user_role"] != None:
+        username = request.session["username"]
+        useremail = request.session["useremail"]
+        user_role = request.session["user_role"]
+        user_room = request.session["room"]
+    else:
+        return redirect("/login/")
 
     # 取得 GET 參數
     asset_type = request.GET.get("asset_type")
     search_asset_id = request.GET.get("search_asset_id")
-    user_id = request.GET.get("user_id")
+    user_id = user_room
 
-    # 建立查詢集（QuerySet）
+    if user_role == "系統管理者":
+        asset_users = models.AssetUserProfile.objects.all()
+        user_id = request.GET.get("user_id")
+
+    # 建立查詢集 (QuerySet)
     assets = models.Asset.objects.all()
     if asset_type:
         assets = assets.filter(asset_type=asset_type)
     if search_asset_id:
         assets = assets.filter(asset_code__icontains=search_asset_id)
     if user_id:
-        assets = assets.filter(user__userid__icontains=user_id)
+        assets = assets.filter(user__username__icontains=user_id)
 
-    message = None if assets.exists() else "查無符合條件的財產"
+    if not assets.exists():
+        messages.add_message(request, messages.WARNING, "沒有資料符合查詢條件")
     
     return render(request, "index.html", locals())
 
@@ -31,20 +75,27 @@ def detail(request, id):
     return render(request, "detail.html", locals())
 
 def asset_user(request):
-    asset_users = models.UserProfile.objects.all()
+    if "user_role" in request.session and request.session["user_role"] != None:
+        if request.session["user_role"] == "系統管理者":
+            user_role = request.session["user_role"]
+        else:
+            messages.add_message(request, messages.WARNING, "您沒有此權限，請聯絡系統管理員")
+            return redirect("/login/")
+    else:
+        return redirect("/login/")
+
+    asset_users = models.AssetUserProfile.objects.all()
 
     if request.method == "POST":
-        asset_user_form = forms.UserProfileForm(request.POST)
+        asset_user_form = forms.AssetUserProfileForm(request.POST)
         if asset_user_form.is_valid():
             asset_user_form.save()
-            return redirect("all-asset-user")
+            messages.add_message(request, messages.SUCCESS, "財產使用者新增成功")
         else:
-            message = "財產使用者新增失敗。"
-            for field, errors in asset_user_form.errors.items():
-                for error in errors:
-                    message += f"\n{field}: {error}"
+            messages.add_message(request, messages.WARNING, "財產使用者新增失敗")
+        return redirect("/asset_user/")
     else:
-        asset_user_form = forms.UserProfileForm()
+        asset_user_form = forms.AssetUserProfileForm()
 
     return render(request, "asset_user.html", locals())
 
@@ -63,3 +114,15 @@ def asset_insert(request):
     else:
         asset_form = forms.AssetForm()
     return render(request, "InsertAsset.html", locals())
+
+def SystemUserInfo(request):
+    if "user_role" in request.session and request.session["user_role"] != None:
+        user_role = request.session["user_role"]
+        username = request.session["username"]
+    else:
+        return redirect("/login/")
+    try:
+        userinfo = models.SystemUser.objects.get(name = username)
+    except:
+        pass
+    return render(request, "System_UserInfo.html", locals())

@@ -8,6 +8,5 @@ class AssetAdmin(admin.ModelAdmin):
     ordering = ("asset_code",)
 
 admin.site.register(models.Asset, AssetAdmin)
-
-admin.site.register(models.UserProfile)
-# admin.site.register(models.StorageLocation)
+admin.site.register(models.AssetUserProfile)
+admin.site.register(models.SystemUser)

@@ -10,32 +10,54 @@
 
         <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
             <ul class="navbar-nav">
-                <li class="nav-item">
-                    <a class="nav-link active" href="/">Home</a>
-                </li>
-                <!-- 財產管理 Dropdown -->
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="assetDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        財產設備管理系統
-                    </a>
-                    <ul class="dropdown-menu" aria-labelledby="assetDropdown">
-                        <li><a class="dropdown-item" href="/insert">新增財產資料</a></li>
-                        <li><a class="dropdown-item" href="/asset_user">財產使用者管理</a></li>
-                        <li><a class="dropdown-item" href="#">報廢系統</a></li>
-                    </ul>
-                </li>
-
-                <!-- 系統管理 Dropdown -->
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="systemDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        系統管理
-                    </a>
-                    <ul class="dropdown-menu" aria-labelledby="systemDropdown">
-                        <li><a class="dropdown-item" href="#">系統帳號管理</a></li>
-                        <li><a class="dropdown-item" href="/admin">後台管理</a></li>
-                    </ul>
-                </li>
-
+                {% if user_role  %}
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/SystemUserInfo/">個人資料</a>
+                    </li>
+                    {% if user_role == "一般使用者" %}
+                        <li class="nav-item">
+                            <a class="nav-link active" href="#">財產設備查詢</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link active" href="#">聯絡管理員</a>
+                        </li>
+                    {% else %}
+                        <!-- 財產管理 Dropdown -->
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="assetDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                財產設備管理系統
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="assetDropdown">
+                                <li><a class="dropdown-item" href="/insert/">新增財產資料</a></li>
+                                <li><a class="dropdown-item" href="/asset_user/">財產使用者管理</a></li>
+                                <li><a class="dropdown-item" href="#">報廢系統</a></li>
+                            </ul>
+                        </li>
+                        <!-- 系統管理 Dropdown -->
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="systemDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                系統管理
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="systemDropdown">
+                                <li><a class="dropdown-item" href="#">系統帳號管理</a></li>
+                                <li><a class="dropdown-item" href="/admin">後台管理</a></li>
+                            </ul>
+                        </li>
+                    {% endif %}
+                        <li class="nav-item">
+                            <a class="nav-link active" href="/logout/">登出</a>
+                        </li>
+                {% else %}
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/login/">登入</a>
+                    </li>
+                {% endif %}
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/admin">後台管理</a>
+                    </li>
             </ul>
         </div>
     </div>

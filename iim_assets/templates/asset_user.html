@@ -2,9 +2,9 @@
 {% block title %}成大工資管財產管理系統{% endblock %}
 {% block content %}
     <div class="container">
-        {% if message %}
-            <div class="alert alert-warning">{{ message }}</div>
-        {% endif %}
+        {% for message in messages %}
+            <div class="alert alert-{{message.tags}}">{{ message }}</div>
+        {% endfor %}
         <div class="row" style="text-align: center;">
             <form name="asset inserting form" action="." method="POST">
                 {% csrf_token %}<!-- 防止網站CSRF(Cross-site request forgery) -->
@@ -28,15 +28,16 @@
                                 <tr bgcolor='#cccccc'>
                                     <td>使用者編號</td>
                                     <td>使用者名稱</td>
-                                    <td>修改</td>
-                                    <td>刪除</td>
+                                    <td>操作</td>
                                 </tr>
                             {% endif %}
                                 <tr bgcolor='{% cycle "#ffccff" "ccffcc" %}'>
                                     <td>{{ user.userid }}</td>
                                     <td>{{ user.username }}</td>
-                                    <td><i class="bi bi-pencil-square"></i></td>
-                                    <td><i class="bi bi-trash-fill"></i></td>
+                                    <td>
+                                        <button type="button" class="btn btn-success">編輯</button>
+                                        <button type="button" class="btn btn-danger">刪除</button>
+                                    </td>
                                 </tr>
                             {% if forloop.last %}
                             </table>

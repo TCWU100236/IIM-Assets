@@ -5,7 +5,7 @@ class AssetForm(forms.ModelForm):
     class Meta:
         model = models.Asset
         fields = ["asset_code", "name", "accessories", "unit_price", "brand", "model", "origin_country", "serial_number", "user", "location",
-                "lifespan_years", "funding_source", "asset_type", "note"]
+                "lifespan_years", "funding_source", "asset_type", "purchase_date", "note"]
 
     def __init__(self, *args, **kwargs):
         super(AssetForm, self).__init__(*args, **kwargs)
@@ -22,14 +22,19 @@ class AssetForm(forms.ModelForm):
         self.fields["lifespan_years"].label = "使用年限"
         self.fields["funding_source"].label = "經費來源"
         self.fields["asset_type"].label = "財產類別"
-        self.fields["note"].label = "購入日期"
+        self.fields["purchase_date"].label = "購入日期"
+        self.fields["note"].label = "備註"
 
-class UserProfileForm(forms.ModelForm):
+class AssetUserProfileForm(forms.ModelForm):
     class Meta:
-        model = models.UserProfile
+        model = models.AssetUserProfile
         fields = ["userid", "username"]
 
     def __init__(self, *args, **kwargs):
-        super(UserProfileForm, self).__init__(*args, **kwargs)
+        super(AssetUserProfileForm, self).__init__(*args, **kwargs)
         self.fields["userid"].label = "使用者編號"
         self.fields["username"].label = "使用者名稱"
+
+class LoginForm(forms.Form):
+    username = forms.CharField(label="使用者名稱", max_length=20)
+    password = forms.CharField(label="密碼", widget=forms.PasswordInput())
