@@ -1,18 +1,60 @@
 {% extends "base.html" %}
 {% block title %}成大工資管財產管理系統{% endblock %}
 {% block content %}
+    <script>
+        function editUser(userid, username) {
+            // 切換為編輯模式
+            document.getElementById("form-mode").value = "edit";
+            document.getElementById("original-userid").value = userid;
+
+            // 將值放到表單欄位
+            document.getElementById("form-userid").value = userid;
+            document.getElementById("form-username").value = username;
+
+            // 鎖住 userid（不可改）
+            // document.getElementById("form-userid").readOnly = true;
+
+            // 改變按鈕文字
+            document.getElementById("submit-btn").value = "儲存修改";
+        }
+
+        function resetForm() {
+            document.getElementById("form-mode").value = "create";
+            document.getElementById("original-userid").value = "";
+            document.getElementById("form-userid").readOnly = false;
+            document.getElementById("submit-btn").value = "新增財產使用者";
+        }
+
+        function confirmDelete(userid, username) {
+            if (confirm("確定要刪除財產使用者：" + username + " 嗎？")) {
+                window.location.href = "/delete_asset_user/" + userid + "/";
+            }
+        }
+    </script>
     <div class="container">
         {% for message in messages %}
             <div class="alert alert-{{message.tags}}">{{ message }}</div>
         {% endfor %}
+
         <div class="row" style="text-align: center;">
             <form name="asset inserting form" action="." method="POST">
-                {% csrf_token %}<!-- 防止網站CSRF(Cross-site request forgery) -->
+                {% csrf_token %}
+                <!-- 用來區分新增還是編輯 -->
+                <input type="hidden" name="mode" id="form-mode" value="create">
+                <input type="hidden" name="original_userid" id="original-userid">
+
                 <table style="margin: auto;">
-                    {{ asset_user_form.as_table }}
+                    <tr>
+                        <td>使用者編號:</td>
+                        <td><input type="text" name="userid" id="form-userid" required></td>
+                    </tr>
+                    <tr>
+                        <td>使用者名稱:</td>
+                        <td><input type="text" name="username" id="form-username" required></td>
+                    </tr>
                 </table>
-                <input type="submit" value="新增財產使用者">
-                <input type="reset" value="清除重填">
+                <input type="submit" id="submit-btn" value="新增財產使用者">
+                <input type="reset" value="清除重填" onclick="resetForm()">
             </form>
         </div>
         <div class="row">
@@ -35,8 +77,8 @@
                                     <td>{{ user.userid }}</td>
                                     <td>{{ user.username }}</td>
                                     <td>
-                                        <button type="button" class="btn btn-success">編輯</button>
-                                        <button type="button" class="btn btn-danger">刪除</button>
+                                        <button type="button" class="btn btn-success" onclick="editUser('{{ user.userid }}', '{{ user.username }}')">編輯</button>
+                                        <button type="button" class="btn btn-danger" onclick="confirmDelete('{{ user.id }}', '{{ user.username }}')">刪除</button>
                                     </td>
                                 </tr>
                             {% if forloop.last %}

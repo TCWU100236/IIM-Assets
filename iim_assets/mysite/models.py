@@ -28,7 +28,7 @@ class Asset(models.Model):
     user = models.ForeignKey(AssetUserProfile, on_delete=models.CASCADE, verbose_name="使用者")
     location = models.CharField(max_length=20, blank=True, null=True, verbose_name="存放處所")
     lifespan_years = models.PositiveIntegerField(default=0, verbose_name="使用年限")
-    funding_source = models.CharField(max_length=10, default="不知", verbose_name="經費來源")
+    funding_source = models.CharField(max_length=10, blank=True, null=True, verbose_name="經費來源")
     asset_type = models.CharField(max_length=20, choices=ASSET_TYPE_CHOICES, verbose_name="財產類別")
     purchase_date = models.DateField(blank=True, null=True, verbose_name="購入日期")
     note = models.TextField(blank=True, null=True, verbose_name="備註")

@@ -2,17 +2,100 @@
 {% extends "base.html" %}
 {% block title %}成大工資管財產管理系統{% endblock %}
 {% block content %}
-<div class='container'>
-    {% if message %}
-        <div class='alert alert-warning'>{{ message }}</div>
-    {% endif %}
-    <form name='asset inserting form' action='.' method='POST'>
-        {% csrf_token %}<!-- 防止網站CSRF(Cross-site request forgery) -->
-        <table>
-            {{ asset_form.as_table }}
-        </table>
-        <input type="submit" value="新增財產">
-        <input type="reset" value="清除重填">
-    </form>
+
+<style>
+    table {
+        border-collapse: collapse;
+        width: 95%;
+    }
+    th, td {
+        border: 1px solid black;
+        padding: 8px;
+    }
+</style>
+
+<div class='container' style="text-align: center;">
+    {% for message in messages %}
+        <div class='alert alert-{{message.tags}}'>{{ message }}</div>
+    {% endfor %}
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header" align="center">
+                    <h3>財產/非消耗品 資訊填寫</h3>
+                </div>
+                <div class="row">
+                    <form name='asset inserting form' action='.' method='POST'>
+                        {% csrf_token %}
+                        <table style="margin: auto;">
+                            <tr>
+                                <td>財產編號</td>
+                                <td><input type="text" name="asset_code" id="asset_code" required></td>
+                                <td>序號</td>
+                                <td><input type="text" name="serial_number" id="serial_number" required></td>
+                            </tr>
+                            <tr>
+                                <td>品名</td>
+                                <td><input type="text" name="name" id="name" required></td>
+                                <td>使用者</td>
+                                <td>
+                                    <select name="user" required>
+                                        <option value="">--請選擇使用者--</option>
+                                        {% for asset_user in asset_users %}
+                                            <option value="{{ asset_user.username }}">{{ asset_user.username }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>附件</td>
+                                <td><textarea name="accessories" rows="3" cols="50"></textarea></td>
+                                <td>存放處所</td>
+                                <td><input type="text" name="location" id="location"></td>
+                            </tr>
+                            <tr>
+                                <td>單價</td>
+                                <td><input type="text" name="unit_price" id="unit_price"></td>
+                                <td>使用年限</td>
+                                <td><input type="text" name="lifespan_years" id="lifespan_years"></td>
+                            </tr>
+                            <tr>
+                                <td>廠牌</td>
+                                <td><input type="text" name="brand" id="brand"></td>
+                                <td>經費來源</td>
+                                <td><input type="text" name="funding_source" id="funding_source"></td>
+                            </tr>
+                            <tr>
+                                <td>型號</td>
+                                <td><input type="text" name="model" id="model"></td>
+                                <td>財產類別</td>
+                                <td>
+                                    <label><input type="radio" name="asset_type" value="財產" required>財產</label>
+                                    <label><input type="radio" name="asset_type" value="非消耗品">非消耗品</label>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>國別</td>
+                                <td><input type="text" name="origin_country" id="origin_country"></td>
+                                <td>購入日期</td>
+                                <td><input type="date" name="purchase_date" id="purchase_date"></td>
+                            </tr>
+                            <tr>
+                                <td>備註</td>
+                                <td colspan="3"><textarea name="note" rows="3" cols="70"></textarea></td>
+                            </tr>
+                            <tr>
+                                <td colspan="4">
+                                    <button type="button" class="btn btn-primary">取消，回上一頁</button>
+                                    <button type="submit" class="btn btn-success">新增財產</button>
+                                    <button type="reset" class="btn btn-danger">清除重填</button>
+                                </td>
+                            </tr>
+                        </table>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>    
 </div>
 {% endblock %}
