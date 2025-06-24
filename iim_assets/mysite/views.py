@@ -1,6 +1,6 @@
 from django.contrib.sessions.models import Session
 from django.contrib import messages
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from mysite import models, forms
 
 # Create your views here.
@@ -84,8 +84,7 @@ def asset_user(request):
             user_role = request.session["user_role"]
         else:
             messages.add_message(request, messages.WARNING, "您沒有此權限，請聯絡系統管理員")
-            Session.objects.all().delete()
-            return redirect("/login/")
+            return redirect("/")
     else:
         return redirect("/login/")
 
@@ -121,8 +120,7 @@ def del_asset_user(request, userid = None):
             user_role = request.session["user_role"]
         else:
             messages.add_message(request, messages.WARNING, "您沒有此權限，請聯絡系統管理員")
-            Session.objects.all().delete()
-            return redirect("/login/")
+            return redirect("/")
     else:
         return redirect("/login/")
     
@@ -141,23 +139,56 @@ def AssetOperation(request, op = None, assetid = None):
             user_role = request.session["user_role"]
         else:
             messages.add_message(request, messages.WARNING, "您沒有此權限，請聯絡系統管理員")
-            Session.objects.all().delete()
-            return redirect("/login/")
+            return redirect("/")
     else:
         return redirect("/login/")
 
-    if op == "insert":
-        print("新增資料")
-    elif op == "edit" and assetid:
-        print("修改資料")
+    asset = None
+    asset_users = models.AssetUserProfile.objects.all()
+
+    if request.method == "POST":
+        if op == "insert":
+            asset = models.Asset()
+        elif op == "edit" and assetid != 0:
+            try:
+                asset = models.Asset.objects.get(id=assetid)
+                asset.delete()
+            except:
+                messages.add_message(request, messages.WARNING, "沒有該筆財產/非消耗品，請先新增資料")
+                return redirect("/Asset/insert")
+
+            # asset = get_object_or_404(models.Asset, id=assetid)
+
+        asset.asset_code = request.POST.get("asset_code")
+        asset.serial_number = request.POST.get("serial_number")
+        asset.name = request.POST.get("name")
+        asset.user = get_object_or_404(models.AssetUserProfile, username=request.POST.get("user"))
+        asset.accessories = request.POST.get("accessories")
+        asset.location = request.POST.get("location")
+        asset.unit_price = request.POST.get("unit_price") or 0
+        asset.lifespan_years = request.POST.get("lifespan_years") or 0
+        asset.brand = request.POST.get("brand")
+        asset.funding_source = request.POST.get("funding_source")
+        asset.model = request.POST.get("model")
+        asset.asset_type = request.POST.get("asset_type")
+        asset.origin_country = request.POST.get("origin_country")
+        asset.purchase_date = request.POST.get("purchase_date") or None
+        asset.note = request.POST.get("note")
+
         try:
-            asset = models.Asset.objects.get(id=assetid)
-            asset_code
-        except:
-            messages.add_message(request, messages.WARNING, "找不到該筆財產/非消耗品，請新增資料")
-        return render(request, "InsertAsset.html", locals())
+            asset.save()
+            messages.add_message(request, messages.SUCCESS, "財產/非消耗品 資料已成功儲存")
+            return redirect("/")
+        except Exception as e:
+            messages.add_message(request, messages.WARNING, f"資料儲存失敗：{str(e)}")
     else:
-        print("沒有動作")
+        if op == "edit" and assetid != 0:
+            asset = get_object_or_404(models.Asset, id=assetid)
+        elif op == "insert":
+            return render(request, "InsertAsset.html", locals())
+        else:
+            messages.add_message(request, messages.WARNING, "無效的操作")
+            return redirect("/")
 
     # asset_users = models.AssetUserProfile.objects.all() # 用於填表下拉選單
     # if request.method == "POST":
@@ -208,7 +239,7 @@ def AssetOperation(request, op = None, assetid = None):
     #         messages.add_message(request, messages.WARNING, f"財產/非消耗品 新增失敗：{str(e)}")
     #         return render(request, "InsertAsset.html", locals())
 
-    return render(request, "InsertAsset.html", locals())
+    # return render(request, "InsertAsset.html", locals())
 
 def del_asset(request, assetid = None):
     if "user_role" in request.session and request.session["user_role"] != None:
@@ -216,8 +247,7 @@ def del_asset(request, assetid = None):
             user_role = request.session["user_role"]
         else:
             messages.add_message(request, messages.WARNING, "您沒有此權限，請聯絡系統管理員")
-            Session.objects.all().delete()
-            return redirect("/login/")
+            return redirect("/")
     else:
         return redirect("/login/")
 

@@ -19,7 +19,7 @@
                     </li>
                     {% if user_role == "一般使用者" %}
                         <li class="nav-item">
-                            <a class="nav-link active" href="#">財產設備查詢</a>
+                            <a class="nav-link active" href="/">財產設備查詢</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link active" href="#">聯絡管理員</a>
@@ -31,7 +31,7 @@
                                 財產設備管理系統
                             </a>
                             <ul class="dropdown-menu" aria-labelledby="assetDropdown">
-                                <li><a class="dropdown-item" href="/InsertAsset/">新增財產資料</a></li>
+                                <li><a class="dropdown-item" href='{% url "Asset-url" "insert" %}'>新增財產資料</a></li>
                                 <li><a class="dropdown-item" href="/asset_user/">財產使用者管理</a></li>
                                 <li><a class="dropdown-item" href="#">報廢系統</a></li>
                             </ul>

@@ -16,7 +16,7 @@
 
 <script>
     function editAsset(assetid) {
-        window.location.href = "/Asset/" + "insert/" + assetid + "/";
+        window.location.href = "/Asset/" + "edit/" + assetid + "/";
     }
 
     function confirmDelete(assetid) {
@@ -82,7 +82,7 @@
                                 <td>備註</td>
                                 <td colspan="3">{{ asset.note }}</td>
                             </tr>
-                            <tr>
+                            <tr align="center">
                                 <td colspan="4">
                                     <button type="button" class="btn btn-primary" onclick="history.back()">回上一頁</button>
                                     {% if user_role == "系統管理者" %}

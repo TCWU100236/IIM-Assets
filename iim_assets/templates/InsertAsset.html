@@ -36,72 +36,70 @@
                 <div class="row">
                     <form name='asset form' action='.' method='POST'>
                         {% csrf_token %}
-                        <!-- 用來區分新增還是編輯 -->
-                        <input type="hidden" name="mode" id="form-mode" value="create">
-                        <input type="hidden" name="original_assetid" id="original_assetid">
-
                         <table style="width: 98%; margin: 10px auto; padding: 10px;">
                             <tr>
                                 <td>財產編號</td>
-                                <td><input type="text" name="asset_code" id="asset_code" required></td>
+                                <td><input type="text" name="asset_code" id="asset_code" value="{{ asset.asset_code|default:'' }}" required></td>
                                 <td>序號</td>
-                                <td><input type="text" name="serial_number" id="serial_number" required></td>
+                                <td><input type="text" name="serial_number" id="serial_number" value="{{ asset.serial_number|default:'' }}"></td>
                             </tr>
                             <tr>
                                 <td>品名</td>
-                                <td><input type="text" name="name" id="name" required></td>
+                                <td><input type="text" name="name" id="name" value="{{ asset.name|default:'' }}" required></td>
                                 <td>使用者</td>
                                 <td>
                                     <select name="user" required>
                                         <option value="">--請選擇使用者--</option>
                                         {% for asset_user in asset_users %}
-                                            <option value="{{ asset_user.username }}">{{ asset_user.username }}</option>
+                                            <option value="{{ asset_user.username }}" {% if asset and asset_user.username == asset.user.username %}selected{% endif %}>
+                                                {{ asset_user.username }}
+                                            </option>
                                         {% endfor %}
                                     </select>
                                 </td>
                             </tr>
                             <tr>
                                 <td>附件</td>
-                                <td><textarea name="accessories" rows="3" cols="50"></textarea></td>
+                                <td><textarea name="accessories" rows="3" cols="50">{{ asset.accessories|default:'' }}</textarea></td>
                                 <td>存放處所</td>
-                                <td><input type="text" name="location" id="location"></td>
+                                <td><input type="text" name="location" id="location" value="{{ asset.location|default:'' }}"></td>
                             </tr>
                             <tr>
                                 <td>單價</td>
-                                <td><input type="text" name="unit_price" id="unit_price"></td>
+                                <td><input type="text" name="unit_price" id="unit_price" value="{{ asset.unit_price|default:'' }}"></td>
                                 <td>使用年限</td>
-                                <td><input type="text" name="lifespan_years" id="lifespan_years"></td>
+                                <td><input type="text" name="lifespan_years" id="lifespan_years" value="{{ asset.lifespan_years|default:'' }}"></td>
                             </tr>
                             <tr>
                                 <td>廠牌</td>
-                                <td><input type="text" name="brand" id="brand"></td>
+                                <td><input type="text" name="brand" id="brand" value="{{ asset.brand|default:'' }}"></td>
                                 <td>經費來源</td>
-                                <td><input type="text" name="funding_source" id="funding_source"></td>
+                                <td><input type="text" name="funding_source" id="funding_source" value="{{ asset.funding_source|default:'' }}"></td>
                             </tr>
                             <tr>
                                 <td>型號</td>
-                                <td><input type="text" name="model" id="model"></td>
+                                <td><input type="text" name="model" id="model" value="{{ asset.model|default:'' }}"></td>
                                 <td>財產類別</td>
                                 <td>
-                                    <label><input type="radio" name="asset_type" value="財產" required>財產</label>
-                                    <label><input type="radio" name="asset_type" value="非消耗品">非消耗品</label>
+                                    <label><input type="radio" name="asset_type" value="財產" {% if asset.asset_type == "財產" %}checked{% endif %} required>財產</label>
+                                    <label><input type="radio" name="asset_type" value="非消耗品" {% if asset.asset_type == "非消耗品" %}checked{% endif %}>非消耗品</label>
                                 </td>
                             </tr>
                             <tr>
                                 <td>國別</td>
-                                <td><input type="text" name="origin_country" id="origin_country"></td>
+                                <td><input type="text" name="origin_country" id="origin_country" value="{{ asset.origin_country|default:'' }}"></td>
                                 <td>購入日期</td>
-                                <td><input type="date" name="purchase_date" id="purchase_date"></td>
+                                <td><input type="date" name="purchase_date" id="purchase_date" value="{{ asset.purchase_date|date:'Y-m-d' }}"></td>
                             </tr>
                             <tr>
                                 <td>備註</td>
-                                <td colspan="3"><textarea name="note" rows="3" cols="70"></textarea></td>
+                                <td colspan="3"><textarea name="note" rows="3" cols="70">{{ asset.note|default:'' }}</textarea></td>
                             </tr>
-                            <tr>
+                            <tr align="center">
                                 <td colspan="4">
-                                    <button type="button" class="btn btn-primary" onclick="confirmBack()">取消，回首頁</button>
-                                    <button type="submit" class="btn btn-success">新增財產</button>
-                                    <button type="reset" class="btn btn-danger">清除重填</button>
+                                    <button type="button" id="cancel-btn" class="btn btn-primary" onclick="confirmBack()">取消，回首頁</button>
+                                    <input type="submit" id="submit-btn" class="btn btn-success" value="儲存">
+                                    <input type="reset" id="reset-btn" class="btn btn-danger" value="清除重填">
                                 </td>
                             </tr>
                         </table>
