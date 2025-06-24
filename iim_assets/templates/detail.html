@@ -4,17 +4,29 @@
 {% block content %}
 
 <style>
-    table {
+    /* table {
         border-collapse: collapse;
-        width: 50%;
-    }
+        width: 95%;
+    } */
     th, td {
         border: 1px solid black;
         padding: 8px;
     }
 </style>
 
-<div class='container' style="text-align: center;">
+<script>
+    function editAsset(assetid) {
+        window.location.href = "/Asset/" + "insert/" + assetid + "/";
+    }
+
+    function confirmDelete(assetid) {
+        if (confirm("確定要刪除此筆財產/非消耗品嗎?")) {
+            window.location.href = "/delete_asset/" + assetid + "/";
+        }
+    }
+</script>
+
+<div class='container'>
     <div class="row">
         <div class="col-md-12">
             <div class="card">
@@ -23,7 +35,7 @@
                         <h3>{{ asset.asset_code }}</h3>
                     </div>
                     <div class="row">
-                        <table>
+                        <table style="width: 98%; margin: 10px auto; padding: 10px;">
                             <tr>
                                 <td>財產編號</td>
                                 <td>{{ asset.asset_code }}</td>
@@ -72,10 +84,10 @@
                             </tr>
                             <tr>
                                 <td colspan="4">
-                                    <button type="button" class="btn btn-primary">回上一頁</button>
+                                    <button type="button" class="btn btn-primary" onclick="history.back()">回上一頁</button>
                                     {% if user_role == "系統管理者" %}
-                                        <button type="button" class="btn btn-success">編輯</button>
-                                        <button type="button" class="btn btn-danger">刪除</button>
+                                        <button type="button" class="btn btn-success" onclick="editAsset('{{ asset.id }}')">編輯</button>
+                                        <button type="button" class="btn btn-danger" onclick="confirmDelete('{{ asset.id }}')">刪除</button>
                                     {% endif %}
                                 </td>
                             </tr>

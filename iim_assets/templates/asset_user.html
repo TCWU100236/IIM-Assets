@@ -16,6 +16,7 @@
 
             // 改變按鈕文字
             document.getElementById("submit-btn").value = "儲存修改";
+            document.getElementById("cancel-btn").style.display = "inline-block";
         }
 
         function resetForm() {
@@ -23,6 +24,12 @@
             document.getElementById("original-userid").value = "";
             document.getElementById("form-userid").readOnly = false;
             document.getElementById("submit-btn").value = "新增財產使用者";
+            document.getElementById("cancel-btn").style.display = "none";
+        }
+
+        function cancelEdit() {
+            document.getElementById("cancel-btn").style.display = "none";
+            document.getElementById("reset-btn").click();
         }
 
         function confirmDelete(userid, username) {
@@ -37,7 +44,7 @@
         {% endfor %}
 
         <div class="row" style="text-align: center;">
-            <form name="asset inserting form" action="." method="POST">
+            <form name="asset user inserting form" action="." method="POST">
                 {% csrf_token %}
                 <!-- 用來區分新增還是編輯 -->
                 <input type="hidden" name="mode" id="form-mode" value="create">
@@ -54,7 +61,8 @@
                     </tr>
                 </table>
                 <input type="submit" id="submit-btn" value="新增財產使用者">
-                <input type="reset" value="清除重填" onclick="resetForm()">
+                <input type="reset"  id="reset-btn" value="清除重填" onclick="resetForm()">
+                <input type="button" id="cancel-btn" value="取消" onclick="cancelEdit()" style="display: none;">
             </form>
         </div>
         <div class="row">
@@ -85,7 +93,7 @@
                             </table>
                             {% endif %}
                             {% empty %}
-                            <h3 class="text-center">目前沒有任何財產使用者</h3>
+                                <h3 class="text-center">目前沒有任何財產使用者</h3>
                         {% endfor %}
                     </div>
                 </div>

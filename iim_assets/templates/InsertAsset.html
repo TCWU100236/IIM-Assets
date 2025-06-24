@@ -4,20 +4,29 @@
 {% block content %}
 
 <style>
-    table {
+    /* table {
         border-collapse: collapse;
         width: 95%;
-    }
+    } */
     th, td {
         border: 1px solid black;
         padding: 8px;
     }
 </style>
 
-<div class='container' style="text-align: center;">
+<script>
+    function confirmBack() {
+        if (confirm("你確定要回到首頁嗎？未儲存的資料將會遺失！")) {
+            window.location.href = "/";
+        }
+    }
+</script>
+
+<div class='container' >
     {% for message in messages %}
         <div class='alert alert-{{message.tags}}'>{{ message }}</div>
     {% endfor %}
+
     <div class="row">
         <div class="col-md-12">
             <div class="card">
@@ -25,9 +34,13 @@
                     <h3>財產/非消耗品 資訊填寫</h3>
                 </div>
                 <div class="row">
-                    <form name='asset inserting form' action='.' method='POST'>
+                    <form name='asset form' action='.' method='POST'>
                         {% csrf_token %}
-                        <table style="margin: auto;">
+                        <!-- 用來區分新增還是編輯 -->
+                        <input type="hidden" name="mode" id="form-mode" value="create">
+                        <input type="hidden" name="original_assetid" id="original_assetid">
+
+                        <table style="width: 98%; margin: 10px auto; padding: 10px;">
                             <tr>
                                 <td>財產編號</td>
                                 <td><input type="text" name="asset_code" id="asset_code" required></td>
@@ -86,7 +99,7 @@
                             </tr>
                             <tr>
                                 <td colspan="4">
-                                    <button type="button" class="btn btn-primary">取消，回上一頁</button>
+                                    <button type="button" class="btn btn-primary" onclick="confirmBack()">取消，回首頁</button>
                                     <button type="submit" class="btn btn-success">新增財產</button>
                                     <button type="reset" class="btn btn-danger">清除重填</button>
                                 </td>
