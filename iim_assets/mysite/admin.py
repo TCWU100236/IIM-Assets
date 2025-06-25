@@ -7,6 +7,11 @@ class AssetAdmin(admin.ModelAdmin):
     search_fields = ("asset_code", "user")
     ordering = ("asset_code",)
 
+class AssetUserProfileAdmin(admin.ModelAdmin):
+    list_display = ("userid", "username")
+    search_fields = ("userid", "username")
+    ordering = ("userid",)
+
 admin.site.register(models.Asset, AssetAdmin)
-admin.site.register(models.AssetUserProfile)
+admin.site.register(models.AssetUserProfile, AssetUserProfileAdmin)
 admin.site.register(models.SystemUser)

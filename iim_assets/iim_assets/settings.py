@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'mysite',
+    'captcha',
 ]
 
 MIDDLEWARE = [
@@ -146,3 +147,11 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 MEDIA_ROOT = BASE_DIR / 'media'
 MEDIA_URL = 'media/'
+
+#   google 寄信功能
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_HOST = "smtp.gmail.com"
+EMAIL_PORT = 587    # (改吳姐，加入env)
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = "r76121243@gs.ncku.edu.tw"    # 管理者信箱 (改吳姐，加入env)
+EMAIL_HOST_PASSWORD = "xyel csmi kcxj dmqf"     # google 寄信服務密碼 (改吳姐，加入env)

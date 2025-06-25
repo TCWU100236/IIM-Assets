@@ -8,6 +8,9 @@ class AssetUserProfile(models.Model):
     userid = models.CharField(max_length=10, unique=True, verbose_name="使用者編號")
     username = models.CharField(max_length=10, verbose_name="使用者名稱")
 
+    class Meta:
+        ordering = ["userid"]
+
     def __str__(self):
         return f"{self.username}"
 
@@ -32,6 +35,9 @@ class Asset(models.Model):
     asset_type = models.CharField(max_length=20, choices=ASSET_TYPE_CHOICES, verbose_name="財產類別")
     purchase_date = models.DateField(blank=True, null=True, verbose_name="購入日期")
     note = models.TextField(blank=True, null=True, verbose_name="備註")
+
+    class Meta:
+        ordering = ["asset_code", "name", "user", "purchase_date"]
 
     def __str__(self):
         return f"{self.asset_code} - {self.name}"

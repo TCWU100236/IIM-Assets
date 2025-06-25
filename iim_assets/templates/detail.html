@@ -15,8 +15,8 @@
 </style>
 
 <script>
-    function editAsset(assetid) {
-        window.location.href = "/Asset/" + "edit/" + assetid + "/";
+    function editAsset(asset_code) {
+        window.location.href = "/Asset/" + "edit/" + asset_code + "/";
     }
 
     function confirmDelete(assetid) {
@@ -34,7 +34,7 @@
                     <div class="card-header" align="center">
                         <h3>{{ asset.asset_code }}</h3>
                     </div>
-                    <div class="row">
+                    <div class="card-body">
                         <table style="width: 98%; margin: 10px auto; padding: 10px;">
                             <tr>
                                 <td>財產編號</td>
@@ -82,16 +82,14 @@
                                 <td>備註</td>
                                 <td colspan="3">{{ asset.note }}</td>
                             </tr>
-                            <tr align="center">
-                                <td colspan="4">
-                                    <button type="button" class="btn btn-primary" onclick="history.back()">回上一頁</button>
-                                    {% if user_role == "系統管理者" %}
-                                        <button type="button" class="btn btn-success" onclick="editAsset('{{ asset.id }}')">編輯</button>
-                                        <button type="button" class="btn btn-danger" onclick="confirmDelete('{{ asset.id }}')">刪除</button>
-                                    {% endif %}
-                                </td>
-                            </tr>
                         </table>
+                    </div>
+                    <div class="card-footer" align="center">
+                        <button type="button" class="btn btn-primary" onclick="history.back()">回上一頁</button>
+                        {% if user_role == "系統管理者" %}
+                            <button type="button" class="btn btn-success" onclick="editAsset('{{ asset.asset_code }}')">編輯</button>
+                            <button type="button" class="btn btn-danger" onclick="confirmDelete('{{ asset.asset_code }}')">刪除</button>
+                        {% endif %}
                     </div>
                 {% else %}
                     <div class="card-header" align="center">

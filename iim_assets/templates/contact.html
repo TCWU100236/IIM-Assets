@@ -1,0 +1,26 @@
+<!-- contact.html -->
+{% extends "base.html" %}
+{% block title %}連絡管理員{% endblock %}
+{% block content %}
+<div class='container'>
+    {% for message in messages %}
+        <div class='alert alert-{{message.tags}}'>{{ message }}</div>
+    {% endfor %}
+    <br/>
+    <div class='card'>
+        <div class='card-header'>
+            <form name='my form' action='.' method='POST'>
+                {% csrf_token %}
+                <h3>寫信給系統管理員</h3>
+        </div>
+        <div class='card-body'>
+                {{ form.as_p }}
+        </div>
+        <div class='card-footer'>
+                <input type='submit' class="btn btn-success" value='送出'>
+                <input type='reset' class="btn btn-danger" value='清除重填'>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

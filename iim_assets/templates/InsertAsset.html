@@ -30,12 +30,12 @@
     <div class="row">
         <div class="col-md-12">
             <div class="card">
-                <div class="card-header" align="center">
-                    <h3>財產/非消耗品 資訊填寫</h3>
-                </div>
-                <div class="row">
-                    <form name='asset form' action='.' method='POST'>
-                        {% csrf_token %}
+                <form name='asset form' action='.' method='POST'>
+                    {% csrf_token %}
+                    <div class="card-header" align="center">
+                        <h3>財產/非消耗品 資訊填寫</h3>
+                    </div>
+                    <div class="card-body">
                         <table style="width: 98%; margin: 10px auto; padding: 10px;">
                             <tr>
                                 <td>財產編號</td>
@@ -95,16 +95,14 @@
                                 <td>備註</td>
                                 <td colspan="3"><textarea name="note" rows="3" cols="70">{{ asset.note|default:'' }}</textarea></td>
                             </tr>
-                            <tr align="center">
-                                <td colspan="4">
-                                    <button type="button" id="cancel-btn" class="btn btn-primary" onclick="confirmBack()">取消，回首頁</button>
-                                    <input type="submit" id="submit-btn" class="btn btn-success" value="儲存">
-                                    <input type="reset" id="reset-btn" class="btn btn-danger" value="清除重填">
-                                </td>
-                            </tr>
                         </table>
-                    </form>
-                </div>
+                    </div>
+                    <div class="card-footer" align="center">
+                        <button type="button" id="cancel-btn" class="btn btn-primary" onclick="confirmBack()">取消，回首頁</button>
+                        <input type="submit" id="submit-btn" class="btn btn-success" value="儲存">
+                        <input type="reset" id="reset-btn" class="btn btn-danger" value="清除重填">
+                    </div>
+                </form>
             </div>
         </div>
     </div>    

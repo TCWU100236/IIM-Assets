@@ -54,8 +54,8 @@
                     <div class="row" id="print-section">
                         {% for a in assets %}
                             {% if forloop.first %}
-                            <table style="width: 98%; margin: 10px auto; padding: 10px;">
-                                <tr bgcolor='#cccccc'>
+                            <table class="table table-striped table-hover table-sm table-responsive" style="width: 98%; margin: 10px auto; padding: 10px;">
+                                <tr>
                                     <td width=150>財產編號</td>
                                     <td width=250>財務名稱</td>
                                     <td width=100>廠牌</td>
@@ -67,7 +67,7 @@
                                     <td width=100>財產類型</td>
                                 </tr>
                             {% endif %}
-                            <tr bgcolor='{% cycle "#ffccff" "ccffcc" %}'>
+                            <tr>
                                 <td><a href='{% url "detail-url" a.id %}'>{{ a.asset_code }}</a></td>
                                 <td>{{ a.name }}</td>
                                 <td>{{ a.brand }}</td>

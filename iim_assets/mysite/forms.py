@@ -1,5 +1,6 @@
 from django import forms
 from mysite import models
+from captcha.fields import CaptchaField
 
 class AssetForm(forms.ModelForm):
     class Meta:
@@ -38,3 +39,10 @@ class AssetUserProfileForm(forms.ModelForm):
 class LoginForm(forms.Form):
     username = forms.CharField(label="使用者名稱", max_length=20)
     password = forms.CharField(label="密碼", widget=forms.PasswordInput())
+
+class ContactForm(forms.Form):
+    user_name = forms.CharField(label="您的使用者名稱", max_length=20, initial="李大仁")
+    user_school = forms.BooleanField(label='是否在學', required=False)
+    user_email = forms.EmailField(label='電子郵件')
+    user_message = forms.CharField(label='您的意見', widget=forms.Textarea)
+    captcha = CaptchaField(label="請輸入驗證碼")
