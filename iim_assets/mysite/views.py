@@ -19,7 +19,7 @@ def login(request):
                     request.session["username"] = user.name
                     request.session["useremail"] = user.email
                     request.session["user_role"] = user.role
-                    request.session["room"] = user.room
+                    request.session["stockchecker"] = user.stockchecker.id
                     request.session.set_expiry(1800)    # session 只存活 30 分鐘
                     messages.add_message(request, messages.SUCCESS, "登入成功")
                     return redirect("/")
@@ -44,27 +44,33 @@ def index(request):
         username = request.session["username"]
         useremail = request.session["useremail"]
         user_role = request.session["user_role"]
-        user_room = request.session["room"]
+        user_stockchecker = request.session["stockchecker"]
     else:
         return redirect("/login/")
 
     # 取得 GET 參數
     asset_type = request.GET.get("asset_type")
     search_asset_id = request.GET.get("search_asset_id")
-    user_id = user_room
+    selected_user_id = request.GET.get("user_id")  # 僅供系統管理者用
+    # user_id = user_stockchecker
 
     if user_role == "系統管理者":
         asset_users = models.AssetUserProfile.objects.all()
-        user_id = request.GET.get("user_id")
+    else:
+        asset_users = models.AssetUserProfile.objects.filter(stockchecker=user_stockchecker)
 
     # 建立查詢集 (QuerySet)
-    assets = models.Asset.objects.all()
+    assets = models.Asset.objects.filter(user__in=asset_users)
+
+    # 套用其他篩選條件
     if asset_type:
         assets = assets.filter(asset_type=asset_type)
     if search_asset_id:
         assets = assets.filter(asset_code__icontains=search_asset_id)
-    if user_id:
-        assets = assets.filter(user__username__icontains=user_id)
+
+    # 系統管理者：可再依 GET 參數選取某特定使用者
+    if user_role == "系統管理者" and selected_user_id:
+        assets = assets.filter(user__username=selected_user_id)
 
     if not assets.exists():
         messages.add_message(request, messages.WARNING, "沒有資料符合查詢條件")

@@ -4,9 +4,19 @@ from django.db import models
 from django.db import models
 from django.conf import settings
 
+class StockChecker(models.Model):
+    name = models.CharField(max_length=10, unique=True, verbose_name="執行盤點的人員")
+
+    def __str__(self):
+        return f"{self.name}"
+    
+    class Meta:
+        ordering = ["name"]
+
 class AssetUserProfile(models.Model):
     userid = models.CharField(max_length=10, unique=True, verbose_name="使用者編號")
     username = models.CharField(max_length=10, verbose_name="使用者名稱")
+    stockchecker = models.ForeignKey(StockChecker, on_delete=models.CASCADE, verbose_name="執行盤點的範圍")
 
     class Meta:
         ordering = ["userid"]
@@ -51,9 +61,12 @@ class SystemUser(models.Model):
     name = models.CharField(max_length=20, null=False, verbose_name="使用者名稱")
     email = models.EmailField(verbose_name="使用者信箱")
     password = models.CharField(max_length=20, null=False, verbose_name="使用者密碼")
-    room = models.CharField(max_length=20, null=True, verbose_name="實驗室之編號")
+    stockchecker = models.ForeignKey(StockChecker, on_delete=models.CASCADE, verbose_name="執行盤點的範圍")
     role = models.CharField(max_length=10, choices=ROLE_TYPE_CHOICES, null=False, default="一般使用者", verbose_name="使用者權限")
     enabled = models.BooleanField(default=False, verbose_name="帳號啟用")
 
     def __str__(self):
         return f"{self.name} - {self.role}"
+
+    class Meta:
+        ordering = ["name", "enabled"]

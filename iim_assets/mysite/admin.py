@@ -15,3 +15,4 @@ class AssetUserProfileAdmin(admin.ModelAdmin):
 admin.site.register(models.Asset, AssetAdmin)
 admin.site.register(models.AssetUserProfile, AssetUserProfileAdmin)
 admin.site.register(models.SystemUser)
+admin.site.register(models.StockChecker)
