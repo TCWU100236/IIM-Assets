@@ -5,6 +5,15 @@ from django.shortcuts import render, redirect, get_object_or_404
 from mysite import models, forms
 from django.core.paginator import Paginator 
 
+import qrcode
+import qrcode.image.svg
+from io import BytesIO
+import base64
+import numpy as np
+from pyzbar.pyzbar import decode
+from PIL import Image
+from django.http import HttpResponse
+
 # Create your views here.
 def login(request):
     if request.method == "POST":
@@ -82,6 +91,9 @@ def detail(request, id):
         user_role = request.session["user_role"]
     try:
         asset = models.Asset.objects.get(id=id)
+        # qr_data = '{}&{}'.format('This is the qrcode data assets.',asset.asset_code)
+        qr_data = f"{asset.asset_code}"
+        qrcode_img = get_qrcode_svg(qr_data)
     except:
         pass
     return render(request, "detail.html", locals())
@@ -326,3 +338,51 @@ def contact(request):
     else:
         form = forms.ContactForm()
     return render(request, "contact.html", locals())
+
+def get_qrcode_svg(text):
+    factory = qrcode.image.svg.SvgImage
+    img = qrcode.make(text ,image_factory=factory, box_size=30)
+    stream = BytesIO()
+    img.save(stream)
+    base64_image = base64.b64encode(stream.getvalue()).decode()
+    return 'data:image/svg+xml;utf8;base64,' + base64_image
+
+def qr_view(request):
+    qr_data = '{}&{}'.format('This is the qrcode data guys.','bip-zip')
+    qrcode_img = get_qrcode_svg(qr_data)
+    return render(request, "qr.html", locals())
+
+def qrcode_reader(img):
+    image = Image.open(img).convert('L')
+    np_image = np.array(image)
+    decoded = decode(np_image)
+    if decoded:
+        return decoded[0].data.decode("utf-8")
+    return False
+
+def qr_scan_view(request):
+    if request.method == "POST":
+        image = request.POST.get("image")
+        if not image:
+            messages.add_message(request, messages.WARNING, "未收到圖像資料")
+            return render(request, "qrscanner.html", locals())
+        
+        try:
+            image_data = base64.b64decode(image.split(",")[1])
+            img = BytesIO(image_data)
+            data = qrcode_reader(img)
+            if not data:
+                messages.add_message(request, messages.WARNING, "該張照片有誤，請重新掃描")
+                return render(request, "qrscanner.html", locals())
+            
+            try:
+                asset = models.Asset.objects.get(asset_code=data)
+                return redirect(f"/detail/{asset.id}")
+            except models.Asset.DoesNotExist:
+                messages.add_message(request, messages.WARNING, "該筆資料不存在於資料庫中，請聯絡管理員")
+                return render(request, "qrscanner.html", locals())
+        except Exception as e:
+            messages.add_message(request, messages.WARNING, f"發生錯誤：{str(e)}")
+            return render(request, "qrscanner.html", locals())
+            
+    return render(request, "qrscanner.html", locals())

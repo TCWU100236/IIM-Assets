@@ -30,6 +30,8 @@ urlpatterns = [
     path("delete_asset/<int:assetid>/", views.del_asset),
     path("contact/", views.contact),
     path("captcha/", include('captcha.urls')),
+    path("qrcode/", views.qr_view),
+    path("qrcode/scan/", views.qr_scan_view),
     path('login/', views.login),
     path('logout/', views.logout),
     path('SystemUserInfo/', views.SystemUserInfo),
