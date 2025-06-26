@@ -88,24 +88,48 @@ def index(request):
 
 def detail(request, id):
     if "user_role" in request.session and request.session["user_role"] != None:
+        username = request.session["username"]
+        useremail = request.session["useremail"]
         user_role = request.session["user_role"]
+        user_stockchecker = request.session["stockchecker"]
+    else:
+        messages.add_message(request, messages.WARNING, "您尚未登入，請先完成登入")
+        return redirect("/login/")
+
+    if user_role == "系統管理者":
+        asset_users = models.AssetUserProfile.objects.all()
+    else:
+        asset_users = models.AssetUserProfile.objects.filter(stockchecker=user_stockchecker)
+
+
+    assets = models.Asset.objects.filter(user__in=asset_users)
+
     try:
-        asset = models.Asset.objects.get(id=id)
-        # qr_data = '{}&{}'.format('This is the qrcode data assets.',asset.asset_code)
+        # asset = models.Asset.objects.get(id=id)
+        asset = assets.get(id=id)
         qr_data = f"{asset.asset_code}"
         qrcode_img = get_qrcode_svg(qr_data)
+        return render(request, "detail.html", locals())
+    except models.Asset.DoesNotExist:
+        messages.add_message(request, messages.WARNING, "資料庫中無此筆資料的詳細內容。")
+        return redirect("/")
     except:
-        pass
-    return render(request, "detail.html", locals())
+        messages.add_message(request, messages.WARNING, "您沒有察看此筆資料的權限，請聯絡系統管理員")
+        return redirect("/")
+    # return render(request, "detail.html", locals())
 
 def asset_user(request):
     if "user_role" in request.session and request.session["user_role"] != None:
         if request.session["user_role"] == "系統管理者":
+            username = request.session["username"]
+            useremail = request.session["useremail"]
             user_role = request.session["user_role"]
+            user_stockchecker = request.session["stockchecker"]
         else:
             messages.add_message(request, messages.WARNING, "您沒有此權限，請聯絡系統管理員")
             return redirect("/")
     else:
+        messages.add_message(request, messages.WARNING, "您尚未登入，請先完成登入")
         return redirect("/login/")
 
     asset_users = models.AssetUserProfile.objects.all() # 顯示所有使用者
@@ -141,11 +165,15 @@ def asset_user(request):
 def del_asset_user(request, userid = None):
     if "user_role" in request.session and request.session["user_role"] != None:
         if request.session["user_role"] == "系統管理者":
+            username = request.session["username"]
+            useremail = request.session["useremail"]
             user_role = request.session["user_role"]
+            user_stockchecker = request.session["stockchecker"]
         else:
             messages.add_message(request, messages.WARNING, "您沒有此權限，請聯絡系統管理員")
             return redirect("/")
     else:
+        messages.add_message(request, messages.WARNING, "您尚未登入，請先完成登入")
         return redirect("/login/")
     
     if userid:
@@ -160,11 +188,15 @@ def del_asset_user(request, userid = None):
 def AssetOperation(request, op = None, asset_code = None):
     if "user_role" in request.session and request.session["user_role"] != None:
         if request.session["user_role"] == "系統管理者":
+            username = request.session["username"]
+            useremail = request.session["useremail"]
             user_role = request.session["user_role"]
+            user_stockchecker = request.session["stockchecker"]
         else:
             messages.add_message(request, messages.WARNING, "您沒有此權限，請聯絡系統管理員")
             return redirect("/")
     else:
+        messages.add_message(request, messages.WARNING, "您尚未登入，請先完成登入")
         return redirect("/login/")
 
     asset = None
@@ -269,11 +301,15 @@ def AssetOperation(request, op = None, asset_code = None):
 def del_asset(request, assetid = None):
     if "user_role" in request.session and request.session["user_role"] != None:
         if request.session["user_role"] == "系統管理者":
+            username = request.session["username"]
+            useremail = request.session["useremail"]
             user_role = request.session["user_role"]
+            user_stockchecker = request.session["stockchecker"]
         else:
             messages.add_message(request, messages.WARNING, "您沒有此權限，請聯絡系統管理員")
             return redirect("/")
     else:
+        messages.add_message(request, messages.WARNING, "您尚未登入，請先完成登入")
         return redirect("/login/")
 
     if assetid:
@@ -287,11 +323,21 @@ def del_asset(request, assetid = None):
 
 def SystemUserInfo(request):
     if "user_role" in request.session and request.session["user_role"] != None:
+        username = request.session["username"]
+        useremail = request.session["useremail"]
+        user_role = request.session["user_role"]
+        user_stockchecker = request.session["stockchecker"]
+    else:
+        messages.add_message(request, messages.WARNING, "您尚未登入，請先完成登入")
+        return redirect("/login/")
+    
+    if "user_role" in request.session and request.session["user_role"] != None:
         userid = request.session["userid"]
         user_role = request.session["user_role"]
         username = request.session["username"]
     else:
         return redirect("/login/")
+    
     try:
         userinfo = models.SystemUser.objects.get(id = userid)
     except:
@@ -301,11 +347,15 @@ def SystemUserInfo(request):
 def contact(request):
     if "user_role" in request.session and request.session["user_role"] != None:
         if request.session["user_role"] == "一般使用者":
+            username = request.session["username"]
+            useremail = request.session["useremail"]
             user_role = request.session["user_role"]
+            user_stockchecker = request.session["stockchecker"]
         else:
             messages.add_message(request, messages.WARNING, "您沒有此權限，請聯絡系統管理員")
             return redirect("/")
     else:
+        messages.add_message(request, messages.WARNING, "您尚未登入，請先完成登入")
         return redirect("/login/")
 
     if request.method == "POST":
@@ -347,10 +397,10 @@ def get_qrcode_svg(text):
     base64_image = base64.b64encode(stream.getvalue()).decode()
     return 'data:image/svg+xml;utf8;base64,' + base64_image
 
-def qr_view(request):
-    qr_data = '{}&{}'.format('This is the qrcode data guys.','bip-zip')
-    qrcode_img = get_qrcode_svg(qr_data)
-    return render(request, "qr.html", locals())
+# def qr_view(request):
+#     qr_data = '{}&{}'.format('This is the qrcode data guys.','bip-zip')
+#     qrcode_img = get_qrcode_svg(qr_data)
+#     return render(request, "qr.html", locals())
 
 def qrcode_reader(img):
     image = Image.open(img).convert('L')
@@ -361,6 +411,19 @@ def qrcode_reader(img):
     return False
 
 def qr_scan_view(request):
+    if "user_role" in request.session and request.session["user_role"] != None:
+        if request.session["user_role"] == "系統管理者":
+            username = request.session["username"]
+            useremail = request.session["useremail"]
+            user_role = request.session["user_role"]
+            user_stockchecker = request.session["stockchecker"]
+        else:
+            messages.add_message(request, messages.WARNING, "您沒有此權限，請聯絡系統管理員")
+            return redirect("/")
+    else:
+        messages.add_message(request, messages.WARNING, "您尚未登入，請先完成登入")
+        return redirect("/login/")
+
     if request.method == "POST":
         image = request.POST.get("image")
         if not image:
