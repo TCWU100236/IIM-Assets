@@ -365,9 +365,6 @@ def contact(request):
             user_school = form.cleaned_data["user_school"]
             user_email = form.cleaned_data["user_email"]
             user_message = form.cleaned_data["user_message"]
-            messages.add_message(request, messages.SUCCESS, "感謝您的來信，我們會儘速處理您的寶貴意見。")
-            return redirect("/")
-
 # ====================================== 寄信功能 ======================================
             mail_body = u'''
 使用者名稱：{}
@@ -381,6 +378,8 @@ def contact(request):
                                     user_email,
                                     ['r76121243@gs.ncku.edu.tw'])
             email.send()
+            messages.add_message(request, messages.SUCCESS, "感謝您的來信，我們會儘速處理您的寶貴意見。")
+            return redirect("/")
 # ======================================================================================
 
         else:
