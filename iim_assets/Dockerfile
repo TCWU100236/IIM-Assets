@@ -18,4 +18,4 @@ RUN pip install -r requirements.txt --no-cache-dir --verbose
 COPY . .
 
 # 啟動 Django 開發伺服器
-CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
+# CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]

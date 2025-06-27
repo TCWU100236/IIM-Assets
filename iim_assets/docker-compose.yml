@@ -1,0 +1,10 @@
+version: "3.1"
+services:
+  iim_asset_django_web:
+    restart: always
+    build: .  #現在位置
+    command: "python manage.py runserver 0.0.0.0:15000" #port可以自己橋
+    volumes:
+      - .:/app
+    ports:
+      - "15000:15000" #port可以自己橋 "內部port:外部port"
